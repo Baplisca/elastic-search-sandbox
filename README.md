@@ -136,6 +136,8 @@ result
   ]
 }
 ```
+![Screen Shot 2023-10-25 at 11 53 45](https://github.com/Baplisca/elastic-search-sandbox/assets/65814732/fcbf11a6-dd2a-4c81-b401-685ea5192c5a)
+
 
 # Ref
 * https://github.com/elastic/elasticsearch
