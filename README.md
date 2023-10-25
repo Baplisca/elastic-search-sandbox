@@ -4,17 +4,20 @@ docker-compose build
 docker-compose up -d
 ```
 
-[optional in ES docker container]
+
 ```
+[optional commands in ES docker container]
 bin/elasticsearch-plugin install analysis-icu
 bin/elasticsearch-plugin install analysis-kuromoji
 ```
 
-check
+check your browser
 * Elasticsearch
   * http://localhost:9200
 * Kibana
   * http://localhost:5601/app/home#/
+  ![Screen Shot 2023-10-25 at 11 51 17](https://github.com/Baplisca/elastic-search-sandbox/assets/65814732/030a92e1-ce54-4655-8624-355e06b1bc1e)
+
 
 # Test in Kibana Dev tool
 sample query
@@ -86,41 +89,22 @@ result
 
 sample query3
 ```
-PUT kuromoji_tokenizer
+POST /_analyze
 {
-  "settings": {
-    "index": {
-      "analysis": {
-        "tokenizer": {
-          "kuromoji_user_dict": {
-            "type": "kuromoji_tokenizer",
-            "mode": "extended"
-          }
-        },
-        "analyzer": {
-          "kuromoji_normalize": {
-            "type": "custom",
-            "char_filter": ["icu_normalizer"],
-            "tokenizer": "kuromoji_user_dict",
-            "filter": [
-              "kuromoji_baseform",
-              "kuromoji_part_of_speech",
-              "cjk_width",
-              "ja_stop",
-              "kuromoji_stemmer",
-              "lowercase"
-            ]
-          }
-        }
-      }
-    }
-  }
-}
-
-GET kuromoji_tokenizer/_analyze
-{
-  "analyzer": "kuromoji_normalize",
-  "text": "東京ｽｶｲツリー"
+  "char_filter": ["icu_normalizer", "kuromoji_iteration_mark"],
+  "tokenizer": {
+    "type": "kuromoji_tokenizer",
+    "mode": "search"
+  },
+  "filter": [
+    "kuromoji_baseform",
+    "kuromoji_part_of_speech",
+    "ja_stop",
+    "kuromoji_number",
+    "kuromoji_stemmer",
+    "lowercase"
+  ],
+  "text": "東京ｽｶｲサーバー"
 }
 ```
 
@@ -143,9 +127,9 @@ result
       "position" : 1
     },
     {
-      "token" : "ツリー",
+      "token" : "サーバ",
       "start_offset" : 5,
-      "end_offset" : 8,
+      "end_offset" : 9,
       "type" : "word",
       "position" : 2
     }
