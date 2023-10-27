@@ -140,6 +140,7 @@ result
 
 sample query4 (部分一致検索)
 ```
+[If kuromoji index was created, delete it]
 DELETE /kuromoji
 
 PUT /kuromoji
@@ -172,6 +173,7 @@ PUT /kuromoji
   }
 }
 
+[check mapping setting]
 GET kuromoji/_mapping
 
 POST kuromoji/_doc/1
@@ -218,7 +220,77 @@ result
     ]
   }
 }
+```
 
+check term_vectors
+```
+GET kuromoji/_doc/1/_termvectors
+{
+  "fields": ["text"]
+}
+```
+result
+```
+#! Deprecation: [types removal] Specifying types in term vector requests is deprecated.
+{
+  "_index" : "kuromoji",
+  "_type" : "_doc",
+  "_id" : "1",
+  "_version" : 1,
+  "found" : true,
+  "took" : 1,
+  "term_vectors" : {
+    "text" : {
+      "field_statistics" : {
+        "sum_doc_freq" : 4,
+        "doc_count" : 1,
+        "sum_ttf" : 4
+      },
+      "terms" : {
+        "は" : {
+          "term_freq" : 1,
+          "tokens" : [
+            {
+              "position" : 2,
+              "start_offset" : 3,
+              "end_offset" : 4
+            }
+          ]
+        },
+        "日本" : {
+          "term_freq" : 1,
+          "tokens" : [
+            {
+              "position" : 0,
+              "start_offset" : 0,
+              "end_offset" : 2
+            }
+          ]
+        },
+        "水" : {
+          "term_freq" : 1,
+          "tokens" : [
+            {
+              "position" : 3,
+              "start_offset" : 4,
+              "end_offset" : 5
+            }
+          ]
+        },
+        "酒" : {
+          "term_freq" : 1,
+          "tokens" : [
+            {
+              "position" : 1,
+              "start_offset" : 2,
+              "end_offset" : 3
+            }
+          ]
+        }
+      }
+    }
+  }
+}
 ```
 
 # Ref
